@@ -6,13 +6,13 @@
                 "description": "Enter your CoinMarketCap API credentials and preferences.",
                 "data": {
                     "api_key": "API Key",
-                    "symbols": "Symbols (e.g., BTC,ETH)",
-                    "scan_interval": "Update Interval (seconds)"
+                    "symbols": "Symbols (e.g., BTC,ETH,SOL,ADA,DOT)",
+                    "scan_interval": "Update Interval (seconds, e.g., 300)"
                 },
                 "data_description": {
-                    "api_key": "Your Pro API Key from CoinMarketCap",
-                    "symbols": "Comma-separated list of cryptocurrency symbols",
-                    "scan_interval": "How often to poll the API (minimum 60 seconds)"
+                    "api_key": "Your Pro API Key (find it at pro.coinmarketcap.com)",
+                    "symbols": "Try combinations like 'BTC,ETH,SOL' or 'DOGE,SHIB,PEPE'",
+                    "scan_interval": "How often to poll the API (e.g., 60 for 1 min, 3600 for 1 hour)"
                 }
             }
         },
@@ -22,12 +22,12 @@
                     "title": "CoinMarketCap Options",
                     "description": "Adjust your tracking preferences.",
                     "data": {
-                        "symbols": "Symbols (e.g., BTC,ETH)",
-                        "scan_interval": "Update Interval (seconds)"
+                        "symbols": "Symbols (e.g., BTC,ETH,SOL,ADA,DOT)",
+                        "scan_interval": "Update Interval (seconds, e.g., 300)"
                     },
                     "data_description": {
-                        "symbols": "Comma-separated list of cryptocurrency symbols",
-                        "scan_interval": "How often to poll the API (minimum 60 seconds)"
+                        "symbols": "Add more like 'BNB,XRP,LTC' or remove existing ones",
+                        "scan_interval": "Frequency of updates (e.g., 60, 300, 3600)"
                     }
                 }
             }
