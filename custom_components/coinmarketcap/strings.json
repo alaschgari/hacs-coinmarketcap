@@ -3,41 +3,41 @@
         "step": {
             "user": {
                 "title": "CoinMarketCap Configuration",
-                "description": "Enter your CoinMarketCap API credentials and preferences.",
+                "description": "Configure your CoinMarketCap integration. Need an API Key? Get one for free at [pro.coinmarketcap.com](https://pro.coinmarketcap.com/account/).",
                 "data": {
                     "api_key": "API Key",
-                    "symbols": "Symbols (e.g., BTC,ETH,SOL,ADA,DOT)",
-                    "scan_interval": "Update Interval (seconds, e.g., 300)",
-                    "decimals": "Decimals (Price & %)",
-                    "show_sensors": "Select Sensors to Track"
+                    "symbols": "Cryptocurrencies (Symbols)",
+                    "scan_interval": "Refresh Interval",
+                    "decimals": "Display Precision",
+                    "show_sensors": "Enabled Sensors"
                 },
                 "data_description": {
-                    "api_key": "Your Pro API Key (find it at pro.coinmarketcap.com)",
-                    "symbols": "Try combinations like 'BTC,ETH,SOL' or 'DOGE,SHIB,PEPE'",
-                    "scan_interval": "Interval in seconds between API updates (e.g., 300 = 5 minutes)",
-                    "decimals": "Number of decimal places to display (e.g., 2)",
-                    "show_sensors": "Choose which data points you want to see for each symbol"
+                    "api_key": "Your personal Pro API Key from the CoinMarketCap developer portal.",
+                    "symbols": "Enter the symbols you want to track, separated by commas (e.g., BTC,ETH,SOL).",
+                    "scan_interval": "How often the data should be refreshed in seconds (Minimum 60s, recommended 300s).",
+                    "decimals": "Number of decimal places for prices and percentage changes.",
+                    "show_sensors": "Select which data points you want to see. Global metrics and API usage are shared across all symbols."
                 }
             }
         },
         "options": {
             "step": {
                 "init": {
-                    "title": "CoinMarketCap Options",
-                    "description": "Adjust your tracking preferences.",
+                    "title": "CoinMarketCap Settings",
+                    "description": "Update your CoinMarketCap configuration and tracking preferences.",
                     "data": {
                         "api_key": "API Key",
-                        "symbols": "Symbols (e.g., BTC,ETH,SOL,ADA,DOT)",
-                        "scan_interval": "Update Interval (seconds, e.g., 300)",
-                        "decimals": "Decimals (Price & %)",
-                        "show_sensors": "Select Sensors to Track"
+                        "symbols": "Cryptocurrencies (Symbols)",
+                        "scan_interval": "Refresh Interval",
+                        "decimals": "Display Precision",
+                        "show_sensors": "Enabled Sensors"
                     },
                     "data_description": {
-                        "api_key": "Update your Pro API Key if needed",
-                        "symbols": "Add more like 'BNB,XRP,LTC' or remove existing ones",
-                        "scan_interval": "Interval in seconds (e.g., 60, 300, 3600)",
-                        "decimals": "Number of decimal places to display (e.g., 2)",
-                        "show_sensors": "Add or remove data points"
+                        "api_key": "Your Pro API Key (find it at pro.coinmarketcap.com).",
+                        "symbols": "Change the symbols you are tracking. Use commas to separate them.",
+                        "scan_interval": "Frequency of updates in seconds (Minimum 60s).",
+                        "decimals": "Adjust the number of decimal places for your sensors.",
+                        "show_sensors": "Add or remove sensors for prices, global metrics, or API usage."
                     }
                 }
             }

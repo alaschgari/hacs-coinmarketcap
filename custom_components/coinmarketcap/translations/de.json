@@ -1,0 +1,54 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "CoinMarketCap Konfiguration",
+                "description": "Konfiguriere deine CoinMarketCap Integration. Du benötigst einen API-Key? Hol dir einen kostenlosen Key unter [pro.coinmarketcap.com](https://pro.coinmarketcap.com/account/).",
+                "data": {
+                    "api_key": "API-Schlüssel",
+                    "symbols": "Kryptowährungen (Symbole)",
+                    "scan_interval": "Aktualisierungsintervall",
+                    "decimals": "Anzeigepräzision",
+                    "show_sensors": "Aktivierte Sensoren"
+                },
+                "data_description": {
+                    "api_key": "Dein persönlicher Pro API-Key aus dem CoinMarketCap Entwicklerportal.",
+                    "symbols": "Gib die Symbole ein, die du verfolgen möchtest, getrennt durch Kommas (z.B. BTC,ETH,SOL).",
+                    "scan_interval": "Wie oft die Daten aktualisiert werden sollen in Sekunden (Minimum 60s, empfohlen 300s).",
+                    "decimals": "Anzahl der Dezimalstellen für Preise und Prozentänderungen.",
+                    "show_sensors": "Wähle aus, welche Datenpunkte du sehen möchtest. Globale Kennzahlen und API-Nutzung gelten für alle Symbole."
+                }
+            }
+        },
+        "options": {
+            "step": {
+                "init": {
+                    "title": "CoinMarketCap Einstellungen",
+                    "description": "Aktualisiere deine CoinMarketCap Konfiguration und Tracking-Einstellungen.",
+                    "data": {
+                        "api_key": "API-Schlüssel",
+                        "symbols": "Kryptowährungen (Symbole)",
+                        "scan_interval": "Aktualisierungsintervall",
+                        "decimals": "Anzeigepräzision",
+                        "show_sensors": "Aktivierte Sensoren"
+                    },
+                    "data_description": {
+                        "api_key": "Dein Pro API-Key (zu finden unter pro.coinmarketcap.com).",
+                        "symbols": "Ändere die verfolgten Symbole. Verwende Kommas zur Trennung.",
+                        "scan_interval": "Häufigkeit der Aktualisierungen in Sekunden (Minimum 60s).",
+                        "decimals": "Passe die Anzahl der Dezimalstellen für deine Sensoren an.",
+                        "show_sensors": "Sensoren für Preise, globale Marktdaten oder API-Nutzung hinzufügen oder entfernen."
+                    }
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Verbindung zur CoinMarketCap API fehlgeschlagen",
+            "invalid_auth": "Ungültiger API-Schlüssel",
+            "unknown": "Unerwarteter Fehler"
+        },
+        "abort": {
+            "already_configured": "Dieses Gerät ist bereits konfiguriert"
+        }
+    }
+}
