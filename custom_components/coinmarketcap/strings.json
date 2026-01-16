@@ -16,6 +16,17 @@
                 }
             }
         },
+        "options": {
+            "step": {
+                "init": {
+                    "title": "CoinMarketCap Options",
+                    "data": {
+                        "symbols": "Cryptocurrency Symbols (e.g., BTC,ETH,SOL)",
+                        "scan_interval": "Update Interval (in seconds, min 60)"
+                    }
+                }
+            }
+        },
         "error": {
             "cannot_connect": "Failed to connect to CoinMarketCap API",
             "invalid_auth": "Invalid API Key",

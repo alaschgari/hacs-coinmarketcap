@@ -18,12 +18,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up CoinMarketCap from a config entry."""
     session = aiohttp.ClientSession()
     
+    # Use options if available, otherwise fallback to data
+    symbols = entry.options.get(CONF_SYMBOLS, entry.data[CONF_SYMBOLS])
+    scan_interval = entry.options.get(CONF_SCAN_INTERVAL, entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
+
     coordinator = CoinMarketCapDataUpdateCoordinator(
         hass,
         session,
         api_key=entry.data[CONF_API_KEY],
-        symbols=entry.data[CONF_SYMBOLS],
-        scan_interval=entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
+        symbols=symbols,
+        scan_interval=scan_interval,
     )
 
     await coordinator.async_config_entry_first_refresh()
@@ -31,17 +35,18 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = coordinator
 
+    # Register update listener
+    entry.async_on_unload(entry.add_update_listener(async_reload_entry))
+
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     return True
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Unload a config entry."""
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
-    if unload_ok:
-        hass.data[DOMAIN].pop(entry.entry_id)
-
     return unload_ok
+
+async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Reload config entry."""
+    await hass.config_entries.async_reload(entry.entry_id)
 
 class CoinMarketCapDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching CoinMarketCap data."""
