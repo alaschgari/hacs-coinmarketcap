@@ -1,4 +1,10 @@
-# CoinMarketCap Home Assistant Integration
+# CoinMarketCap Integration for Home Assistant
+
+<p align="center">
+  <img src="logo.png" alt="CoinMarketCap Logo" width="200" height="200">
+</p>
+
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
 
 This custom integration for Home Assistant allows you to track cryptocurrency prices and market data using the CoinMarketCap API.
 
@@ -21,3 +27,9 @@ This custom integration for Home Assistant allows you to track cryptocurrency pr
 2. Click **Add Integration**.
 3. Search for **CoinMarketCap**.
 4. Enter your **API Key** and the **Symbols** (comma-separated, e.g., `BTC,ETH,SOL`) you want to track.
+
+## Disclaimer
+
+This integration is an **unofficial** project and is **not** affiliated, associated, authorized, endorsed by, or in any way officially connected with CoinMarketCap, or any of its subsidiaries or its affiliates. The official CoinMarketCap website can be found at [https://coinmarketcap.com](https://coinmarketcap.com).
+
+This project is provided "as is" by a private individual for educational and personal use only. **No warranty** of any kind, express or implied, is made regarding the accuracy, reliability, or availability of this integration. Use it at your own risk. The author assumes no responsibility or liability for any errors or omissions in the content of this project or for any damages arising from its use.
