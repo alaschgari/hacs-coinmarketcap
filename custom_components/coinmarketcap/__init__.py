@@ -6,6 +6,7 @@ from datetime import timedelta
 import aiohttp
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
@@ -27,7 +28,7 @@ PLATFORMS = ["sensor"]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up CoinMarketCap from a config entry."""
-    session = aiohttp.ClientSession()
+    session = async_get_clientsession(hass)
     
     # Use options if available, otherwise fallback to data
     api_key = entry.options.get(CONF_API_KEY, entry.data[CONF_API_KEY])
@@ -98,47 +99,46 @@ class CoinMarketCapDataUpdateCoordinator(DataUpdateCoordinator):
             'convert': 'USD'
         }
         
-        try:
-            # We use gather to fetch all data points concurrently
-            result = {}
-            
-            # Use multiple tasks for parallel fetching
-            tasks = [
-                self.session.get(API_URL, headers=headers, params=params_quotes),
-                self.session.get(GLOBAL_API_URL, headers=headers),
-                self.session.get(FEAR_GREED_API_URL, headers=headers)
-            ]
-            
-            responses = await asyncio.gather(*tasks, return_exceptions=True)
-            
-            # Process Quotes
-            if not isinstance(responses[0], Exception) and responses[0].status == 200:
-                quotes_data = await responses[0].json()
-                result['symbols'] = quotes_data.get('data', {})
-            else:
-                _LOGGER.error("Error fetching quotes: %s", responses[0])
-            
-            # Process Global Metrics
-            if not isinstance(responses[1], Exception) and responses[1].status == 200:
-                global_data = await responses[1].json()
-                result['global'] = global_data.get('data', {})
-            else:
-                _LOGGER.error("Error fetching global metrics: %s", responses[1])
+        async def fetch_url(url, params=None):
+            """Helper to fetch JSON with error handling."""
+            try:
+                async with self.session.get(url, headers=headers, params=params, timeout=10) as response:
+                    if response.status != 200:
+                        _LOGGER.error("Error fetching %s: %s", url, response.status)
+                        return None
+                    return await response.json()
+            except Exception as err:
+                _LOGGER.error("Exception fetching %s: %s", url, err)
+                return None
 
-            # Process Fear & Greed
-            if not isinstance(responses[2], Exception) and responses[2].status == 200:
-                fg_data = await responses[2].json()
-                # The response structure for fear and greed can vary, let's grab the first item
-                fg_list = fg_data.get('data', [])
-                if fg_list:
-                    result['fear_greed'] = fg_list[0]
-            else:
-                _LOGGER.error("Error fetching Fear & Greed index: %s", responses[2])
+        # Execute all fetches in parallel
+        results = await asyncio.gather(
+            fetch_url(API_URL, params_quotes),
+            fetch_url(GLOBAL_API_URL),
+            fetch_url(FEAR_GREED_API_URL),
+            return_exceptions=True
+        )
 
-            if not result:
-                raise UpdateFailed("Failed to fetch any data from CoinMarketCap")
-                
-            return result
-                
-        except Exception as err:
-            raise UpdateFailed(f"Error communicating with API: {err}")
+        final_data = {}
+        
+        # Process Quotes
+        if results[0] and 'data' in results[0]:
+            final_data['symbols'] = results[0]['data']
+        
+        # Process Global Metrics
+        if results[1] and 'data' in results[1]:
+            final_data['global'] = results[1]['data']
+
+        # Process Fear & Greed
+        if results[2] and 'data' in results[2]:
+            fg_list = results[2]['data']
+            if fg_list and isinstance(fg_list, list):
+                final_data['fear_greed'] = fg_list[0]
+            elif isinstance(fg_list, dict):
+                # Backup in case API format changes
+                final_data['fear_greed'] = fg_list
+
+        if not final_data:
+            raise UpdateFailed("Failed to fetch any data from CoinMarketCap")
+            
+        return final_data
