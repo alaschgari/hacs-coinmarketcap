@@ -14,10 +14,17 @@ async def async_setup_entry(hass, entry, async_add_entities):
     enabled_sensors = entry.options.get(CONF_SHOW_SENSORS, entry.data.get(CONF_SHOW_SENSORS, DEFAULT_SENSORS))
     
     entities = []
+    
+    # Add symbol-based sensors
     for symbol in symbols:
         for sensor_type in enabled_sensors:
-            if sensor_type in SENSOR_TYPES:
+            if sensor_type in SENSOR_TYPES and SENSOR_TYPES[sensor_type]["category"] == "symbol":
                 entities.append(CoinMarketCapSensor(coordinator, symbol, sensor_type))
+    
+    # Add global and fear_greed sensors (these don't depend on a specific symbol)
+    for sensor_type in enabled_sensors:
+        if sensor_type in SENSOR_TYPES and SENSOR_TYPES[sensor_type]["category"] in ["global", "fear_greed"]:
+            entities.append(CoinMarketCapSensor(coordinator, None, sensor_type))
         
     async_add_entities(entities)
 
@@ -27,12 +34,17 @@ class CoinMarketCapSensor(CoordinatorEntity, SensorEntity):
     def __init__(self, coordinator, symbol, sensor_type):
         """Initialize the sensor."""
         super().__init__(coordinator)
-        self._symbol = symbol.upper()
+        self._symbol = symbol.upper() if symbol else None
         self._sensor_type = sensor_type
         self._sensor_info = SENSOR_TYPES[sensor_type]
         
-        self._attr_name = f"{self._symbol} {self._sensor_info['name']}"
-        self._attr_unique_id = f"{DOMAIN}_{self._symbol}_{sensor_type}"
+        if self._symbol:
+            self._attr_name = f"{self._symbol} {self._sensor_info['name']}"
+            self._attr_unique_id = f"{DOMAIN}_{self._symbol}_{sensor_type}"
+        else:
+            self._attr_name = f"CMC {self._sensor_info['name']}"
+            self._attr_unique_id = f"{DOMAIN}_{sensor_type}"
+            
         self._entry_id = coordinator.config_entry.entry_id
         
         # Set icon if defined
@@ -52,22 +64,30 @@ class CoinMarketCapSensor(CoordinatorEntity, SensorEntity):
     @property
     def state(self):
         """Return the state of the sensor."""
-        data = self.coordinator.data.get(self._symbol)
+        category = self._sensor_info["category"]
+        
+        if category == "symbol" and self._symbol:
+            data = self.coordinator.data.get('symbols', {}).get(self._symbol)
+        elif category == "global":
+            data = self.coordinator.data.get('global')
+        elif category == "fear_greed":
+            data = self.coordinator.data.get('fear_greed')
+        else:
+            data = None
+
         if data:
-            # Navigate schema: data['symbol'] -> [path]
-            # e.g. ['quote', 'USD', 'price']
             value = data
             for key in self._sensor_info["json_path"]:
-                value = value.get(key)
+                if isinstance(value, dict):
+                    value = value.get(key)
+                else:
+                    return None
+                    
                 if value is None:
                     return None
             
             # Formatting
             if isinstance(value, (int, float)):
-                # Apply rounding to prices, percentages, and market cap/volume if it's a currency
-                # We simply apply to everything that is a number for consistency with the 'decimals' setting
-                # or strictly generally for price/% as requested.
-                # Let's apply it generally to floats to keep it clean.
                 return round(value, self.coordinator.decimals)
             return value
             
@@ -81,14 +101,27 @@ class CoinMarketCapSensor(CoordinatorEntity, SensorEntity):
     @property
     def extra_state_attributes(self):
         """Return the state attributes."""
-        # Attributes are now individual sensors, so we reduce this to standard attributes
-        # or we could keep providing all raw data? 
-        # Better: Provide only last_updated if available
-        data = self.coordinator.data.get(self._symbol)
-        if data:
-            quote = data.get('quote', {}).get('USD', {})
-            return {
-                "last_updated": quote.get('last_updated'),
-                "api_id": data.get('id')
-            }
+        category = self._sensor_info["category"]
+        
+        if category == "symbol" and self._symbol:
+            data = self.coordinator.data.get('symbols', {}).get(self._symbol)
+            if data:
+                quote = data.get('quote', {}).get('USD', {})
+                return {
+                    "last_updated": quote.get('last_updated'),
+                    "api_id": data.get('id'),
+                    "logo_url": f"https://s2.coinmarketcap.com/static/img/coins/64x64/{data.get('id')}.png"
+                }
+        elif category == "global":
+            data = self.coordinator.data.get('global')
+            if data:
+                return {
+                    "last_updated": data.get('last_updated'),
+                }
+        elif category == "fear_greed":
+            data = self.coordinator.data.get('fear_greed')
+            if data:
+                return {
+                    "last_updated": data.get('last_updated'),
+                }
         return None
