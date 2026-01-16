@@ -37,6 +37,12 @@ This integration utilizes the following CoinMarketCap Professional API endpoints
 3. Search for **CoinMarketCap**.
 4. Enter your **API Key** and the **Symbols** (comma-separated, e.g., `BTC,ETH,SOL`) you want to track.
 
+## Support
+
+If you find this integration useful and want to support its development, you can buy me a coffee! Your support is greatly appreciated and helps keep this project alive and updated.
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate-orange.svg?style=for-the-badge&logo=buy-me-a-coffee)](https://www.buymeacoffee.com/alaschgari)
+
 ## Disclaimer
 
 This integration is an **unofficial** project and is **not** affiliated, associated, authorized, endorsed by, or in any way officially connected with CoinMarketCap, or any of its subsidiaries or its affiliates. The official CoinMarketCap website can be found at [https://coinmarketcap.com](https://coinmarketcap.com).
