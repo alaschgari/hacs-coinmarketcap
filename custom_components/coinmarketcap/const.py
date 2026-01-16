@@ -10,7 +10,7 @@ CONF_SHOW_SENSORS = "show_sensors"
 
 DEFAULT_SCAN_INTERVAL = 300  # 5 minutes
 DEFAULT_DECIMALS = 2
-DEFAULT_SENSORS = ["price", "percent_change_24h", "credits_left_day"]
+DEFAULT_SENSORS = ["price", "percent_change_24h", "credits_used_month"]
 
 # API Endpoints
 API_URL = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
