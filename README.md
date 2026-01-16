@@ -8,6 +8,11 @@
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate-orange.svg)](https://www.buymeacoffee.com/alaschgari)
 
 This custom integration for Home Assistant allows you to track cryptocurrency prices and market data using the CoinMarketCap API.
+ 
+## Prerequisites
+To use this integration, you need a **CoinMarketCap Pro API Key**.
+- You can get a free API key (Basic Plan) by signing up at [coinmarketcap.com/api/](https://coinmarketcap.com/api/).
+- Once registered, you will find your API key in the [CoinMarketCap Developer Dashboard](https://pro.coinmarketcap.com/account/).
 
 ## Features
 - Real-time price tracking in USD.
@@ -35,7 +40,7 @@ This integration utilizes the following CoinMarketCap Professional API endpoints
 1. Go to **Settings** > **Devices & Services**.
 2. Click **Add Integration**.
 3. Search for **CoinMarketCap**.
-4. Enter your **API Key** and the **Symbols** (comma-separated, e.g., `BTC,ETH,SOL`) you want to track.
+4. Enter your **API Key** (from [pro.coinmarketcap.com](https://pro.coinmarketcap.com/account/)) and the **Symbols** (comma-separated, e.g., `BTC,ETH,SOL`) you want to track.
 
 ## Support
 

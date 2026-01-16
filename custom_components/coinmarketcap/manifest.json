@@ -1,7 +1,7 @@
 {
     "domain": "coinmarketcap",
     "name": "CoinMarketCap",
-    "description": "Track cryptocurrency prices, global metrics, and API credits directly in Home Assistant.",
+    "description": "Track cryptocurrency prices, global metrics, and API health. Requires a Pro API Key from coinmarketcap.com/api/.",
     "documentation": "https://github.com/alaschgari/hacs-coinmarketcap",
     "issue_tracker": "https://github.com/alaschgari/hacs-coinmarketcap/issues",
     "dependencies": [],
@@ -14,5 +14,5 @@
     "loggers": [
         "custom_components.coinmarketcap"
     ],
-    "version": "1.3.8"
+    "version": "1.3.9"
 }
