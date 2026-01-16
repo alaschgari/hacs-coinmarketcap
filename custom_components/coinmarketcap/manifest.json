@@ -1,7 +1,7 @@
 {
     "domain": "coinmarketcap",
     "name": "CoinMarketCap",
-    "description": "Track cryptocurrency prices and market metrics directly in Home Assistant.",
+    "description": "Track cryptocurrency prices, global metrics, and API credits directly in Home Assistant.",
     "documentation": "https://github.com/alaschgari/hacs-coinmarketcap",
     "issue_tracker": "https://github.com/alaschgari/hacs-coinmarketcap/issues",
     "dependencies": [],
@@ -10,5 +10,9 @@
     ],
     "config_flow": true,
     "iot_class": "cloud_polling",
-    "version": "1.3.5"
+    "integration_type": "service",
+    "loggers": [
+        "custom_components.coinmarketcap"
+    ],
+    "version": "1.3.6"
 }
