@@ -47,7 +47,8 @@ class CoinMarketCapSensor(CoordinatorEntity, SensorEntity):
                 price = data['quote']['USD']['price']
                 return round(price, self.coordinator.decimals)
             elif self._sensor_type == "percent_change_24h":
-                return data['quote']['USD']['percent_change_24h']
+                percent = data['quote']['USD']['percent_change_24h']
+                return round(percent, self.coordinator.decimals)
         return None
 
     @property

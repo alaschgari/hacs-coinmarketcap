@@ -8,13 +8,13 @@
                     "api_key": "API Key",
                     "symbols": "Symbols (e.g., BTC,ETH,SOL,ADA,DOT)",
                     "scan_interval": "Update Interval (seconds, e.g., 300)",
-                    "decimals": "Decimals for Price (e.g., 2)"
+                    "decimals": "Decimals (Price & %)"
                 },
                 "data_description": {
                     "api_key": "Your Pro API Key (find it at pro.coinmarketcap.com)",
                     "symbols": "Try combinations like 'BTC,ETH,SOL' or 'DOGE,SHIB,PEPE'",
                     "scan_interval": "Interval in seconds between API updates (e.g., 300 = 5 minutes)",
-                    "decimals": "Number of decimal places to display for pricing (e.g., 2 for $100.50)"
+                    "decimals": "Number of decimal places to display (e.g., 2)"
                 }
             }
         },
@@ -27,7 +27,7 @@
                         "api_key": "API Key",
                         "symbols": "Symbols (e.g., BTC,ETH,SOL,ADA,DOT)",
                         "scan_interval": "Update Interval (seconds, e.g., 300)",
-                        "decimals": "Decimals for Price (e.g., 2)"
+                        "decimals": "Decimals (Price & %)"
                     },
                     "data_description": {
                         "api_key": "Update your Pro API Key if needed",
