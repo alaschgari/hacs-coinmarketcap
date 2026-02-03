@@ -7,10 +7,14 @@ CONF_SYMBOLS = "symbols"
 CONF_SCAN_INTERVAL = "scan_interval"
 CONF_DECIMALS = "decimals"
 CONF_SHOW_SENSORS = "show_sensors"
+CONF_CURRENCY = "currency"
 
 DEFAULT_SCAN_INTERVAL = 300  # 5 minutes
 DEFAULT_DECIMALS = 2
+DEFAULT_CURRENCY = "USD"
 DEFAULT_SENSORS = ["price", "percent_change_24h", "credits_left_month"]
+
+CURRENCIES = ["USD", "EUR", "GBP", "BTC", "ETH"]
 
 # API Endpoints
 API_URL = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
@@ -22,94 +26,114 @@ SENSOR_TYPES = {
     # Cryptocurrency Symbols
     "price": {
         "name": "Price",
-        "json_path": ["quote", "USD", "price"],
-        "unit": "$",
+        "json_path": ["quote", "{currency}", "price"],
+        "unit": "{currency_symbol}",
         "icon": "mdi:cash",
-        "category": "symbol"
+        "category": "symbol",
+        "device_class": "monetary",
+        "state_class": "measurement"
     },
     "percent_change_1h": {
         "name": "1h Change",
-        "json_path": ["quote", "USD", "percent_change_1h"],
+        "json_path": ["quote", "{currency}", "percent_change_1h"],
         "unit": "%",
         "icon": "mdi:chart-line-variant",
-        "category": "symbol"
+        "category": "symbol",
+        "state_class": "measurement"
     },
     "percent_change_24h": {
         "name": "24h Change",
-        "json_path": ["quote", "USD", "percent_change_24h"],
+        "json_path": ["quote", "{currency}", "percent_change_24h"],
         "unit": "%",
         "icon": "mdi:chart-line",
-        "category": "symbol"
+        "category": "symbol",
+        "state_class": "measurement"
     },
     "percent_change_7d": {
         "name": "7d Change",
-        "json_path": ["quote", "USD", "percent_change_7d"],
+        "json_path": ["quote", "{currency}", "percent_change_7d"],
         "unit": "%",
         "icon": "mdi:calendar-week",
-        "category": "symbol"
+        "category": "symbol",
+        "state_class": "measurement"
     },
     "percent_change_30d": {
         "name": "30d Change",
-        "json_path": ["quote", "USD", "percent_change_30d"],
+        "json_path": ["quote", "{currency}", "percent_change_30d"],
         "unit": "%",
         "icon": "mdi:calendar-month",
-        "category": "symbol"
+        "category": "symbol",
+        "state_class": "measurement"
     },
     "volume_24h": {
         "name": "Volume 24h",
-        "json_path": ["quote", "USD", "volume_24h"],
-        "unit": "$",
+        "json_path": ["quote", "{currency}", "volume_24h"],
+        "unit": "{currency_symbol}",
         "icon": "mdi:chart-bar",
-        "category": "symbol"
+        "category": "symbol",
+        "device_class": "monetary",
+        "state_class": "measurement"
     },
     "volume_change_24h": {
         "name": "Volume Change 24h",
-        "json_path": ["quote", "USD", "volume_change_24h"],
+        "json_path": ["quote", "{currency}", "volume_change_24h"],
         "unit": "%",
         "icon": "mdi:chart-bell-curve",
-        "category": "symbol"
+        "category": "symbol",
+        "state_class": "measurement"
     },
     "market_cap": {
         "name": "Market Cap",
-        "json_path": ["quote", "USD", "market_cap"],
-        "unit": "$",
+        "json_path": ["quote", "{currency}", "market_cap"],
+        "unit": "{currency_symbol}",
         "icon": "mdi:chart-pie",
-        "category": "symbol"
+        "category": "symbol",
+        "device_class": "monetary",
+        "state_class": "measurement"
     },
     "market_cap_dominance": {
         "name": "Market Cap Dominance",
-        "json_path": ["quote", "USD", "market_cap_dominance"],
+        "json_path": ["quote", "{currency}", "market_cap_dominance"],
         "unit": "%",
         "icon": "mdi:chart-donut",
-        "category": "symbol"
+        "category": "symbol",
+        "state_class": "measurement"
     },
     "circulating_supply": {
         "name": "Circulating Supply",
         "json_path": ["circulating_supply"],
         "unit": None,
         "icon": "mdi:coins",
-        "category": "symbol"
+        "category": "symbol",
+        "state_class": "measurement",
+        "entity_category": "diagnostic"
     },
     "total_supply": {
         "name": "Total Supply",
         "json_path": ["total_supply"],
         "unit": None,
         "icon": "mdi:safe",
-        "category": "symbol"
+        "category": "symbol",
+        "state_class": "measurement",
+        "entity_category": "diagnostic"
     },
     "max_supply": {
         "name": "Max Supply",
         "json_path": ["max_supply"],
         "unit": None,
         "icon": "mdi:database",
-        "category": "symbol"
+        "category": "symbol",
+        "state_class": "measurement",
+        "entity_category": "diagnostic"
     },
     "cmc_rank": {
         "name": "Rank",
         "json_path": ["cmc_rank"],
         "unit": None,
         "icon": "mdi:trophy",
-        "category": "symbol"
+        "category": "symbol",
+        "state_class": "measurement",
+        "entity_category": "diagnostic"
     },
     
     # Global Metrics
@@ -118,28 +142,34 @@ SENSOR_TYPES = {
         "json_path": ["btc_dominance"],
         "unit": "%",
         "icon": "mdi:currency-btc",
-        "category": "global"
+        "category": "global",
+        "state_class": "measurement"
     },
     "eth_dominance": {
         "name": "ETH Dominance",
         "json_path": ["eth_dominance"],
         "unit": "%",
         "icon": "mdi:currency-eth",
-        "category": "global"
+        "category": "global",
+        "state_class": "measurement"
     },
     "total_market_cap": {
         "name": "Total Market Cap",
-        "json_path": ["quote", "USD", "total_market_cap"],
-        "unit": "$",
+        "json_path": ["quote", "{currency}", "total_market_cap"],
+        "unit": "{currency_symbol}",
         "icon": "mdi:earth",
-        "category": "global"
+        "category": "global",
+        "device_class": "monetary",
+        "state_class": "measurement"
     },
     "total_volume_24h": {
         "name": "Total Volume 24h",
-        "json_path": ["quote", "USD", "total_volume_24h"],
-        "unit": "$",
+        "json_path": ["quote", "{currency}", "total_volume_24h"],
+        "unit": "{currency_symbol}",
         "icon": "mdi:chart-line-variant",
-        "category": "global"
+        "category": "global",
+        "device_class": "monetary",
+        "state_class": "measurement"
     },
     
     # Fear & Greed Index
@@ -148,7 +178,8 @@ SENSOR_TYPES = {
         "json_path": ["value"],
         "unit": None,
         "icon": "mdi:emoticon-neutral",
-        "category": "fear_greed"
+        "category": "fear_greed",
+        "state_class": "measurement"
     },
     "fear_greed_classification": {
         "name": "Fear & Greed classification",
@@ -164,27 +195,35 @@ SENSOR_TYPES = {
         "json_path": ["usage", "current_day", "credits_used"],
         "unit": "Credits",
         "icon": "mdi:api",
-        "category": "key_info"
+        "category": "key_info",
+        "state_class": "total_increasing",
+        "entity_category": "diagnostic"
     },
     "credits_left_day": {
         "name": "Credits Left Today",
         "json_path": ["usage", "current_day", "credits_left"],
         "unit": "Credits",
         "icon": "mdi:api-off",
-        "category": "key_info"
+        "category": "key_info",
+        "state_class": "measurement",
+        "entity_category": "diagnostic"
     },
     "credits_used_month": {
         "name": "Credits Used Month",
         "json_path": ["usage", "current_month", "credits_used"],
         "unit": "Credits",
         "icon": "mdi:calendar-check",
-        "category": "key_info"
+        "category": "key_info",
+        "state_class": "total_increasing",
+        "entity_category": "diagnostic"
     },
     "credits_left_month": {
         "name": "Credits Left Month",
         "json_path": ["usage", "current_month", "credits_left"],
         "unit": "Credits",
         "icon": "mdi:calendar-remove",
-        "category": "key_info"
+        "category": "key_info",
+        "state_class": "measurement",
+        "entity_category": "diagnostic"
     }
 }

@@ -1,11 +1,24 @@
-"""Sensor platform for CoinMarketCap integration."""
-from homeassistant.components.sensor import SensorEntity
-from homeassistant.helpers.entity import DeviceInfo
+from __future__ import annotations
+
+from homeassistant.components.sensor import (
+    SensorEntity, 
+    SensorDeviceClass, 
+    SensorStateClass
+)
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.entity import DeviceInfo, EntityCategory
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN, SENSOR_TYPES, CONF_SHOW_SENSORS, DEFAULT_SENSORS
+from .const import DOMAIN, SENSOR_TYPES, CONF_SHOW_SENSORS, DEFAULT_SENSORS, CURRENCIES
+from . import CoinMarketCapDataUpdateCoordinator
 
-async def async_setup_entry(hass, entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant, 
+    entry: ConfigEntry, 
+    async_add_entities: AddEntitiesCallback
+) -> None:
     """Set up the CoinMarketCap sensors."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     
@@ -31,7 +44,12 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class CoinMarketCapSensor(CoordinatorEntity, SensorEntity):
     """Representation of a CoinMarketCap sensor."""
 
-    def __init__(self, coordinator, symbol, sensor_type):
+    def __init__(
+        self, 
+        coordinator: CoinMarketCapDataUpdateCoordinator, 
+        symbol: str | None, 
+        sensor_type: str
+    ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
         self._symbol = symbol.upper() if symbol else None
@@ -50,6 +68,14 @@ class CoinMarketCapSensor(CoordinatorEntity, SensorEntity):
         # Set icon if defined
         if "icon" in self._sensor_info:
             self._attr_icon = self._sensor_info["icon"]
+            
+        # Set classes and categories
+        if "device_class" in self._sensor_info:
+            self._attr_device_class = self._sensor_info["device_class"]
+        if "state_class" in self._sensor_info:
+            self._attr_state_class = self._sensor_info["state_class"]
+        if "entity_category" in self._sensor_info:
+            self._attr_entity_category = self._sensor_info["entity_category"]
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -62,7 +88,20 @@ class CoinMarketCapSensor(CoordinatorEntity, SensorEntity):
         )
 
     @property
-    def state(self):
+    def icon(self) -> str | None:
+        """Return dynamic icon for Fear & Greed."""
+        if self._sensor_type == "fear_greed_index":
+            value = self.native_value
+            if value is not None:
+                if value <= 25: return "mdi:emoticon-dead"
+                if value <= 45: return "mdi:emoticon-sad"
+                if value <= 55: return "mdi:emoticon-neutral"
+                if value <= 75: return "mdi:emoticon-happy"
+                return "mdi:emoticon-excited"
+        return self._sensor_info.get("icon")
+
+    @property
+    def native_value(self) -> str | float | int | None:
         """Return the state of the sensor."""
         category = self._sensor_info["category"]
         
@@ -79,7 +118,12 @@ class CoinMarketCapSensor(CoordinatorEntity, SensorEntity):
 
         if data:
             value = data
-            for key in self._sensor_info["json_path"]:
+            json_path = self._sensor_info["json_path"]
+            
+            # Dynamic path replacement for currency
+            actual_path = [k.replace("{currency}", self.coordinator.currency) for k in json_path]
+            
+            for key in actual_path:
                 if isinstance(value, dict):
                     value = value.get(key)
                 else:
@@ -96,12 +140,17 @@ class CoinMarketCapSensor(CoordinatorEntity, SensorEntity):
         return None
 
     @property
-    def unit_of_measurement(self):
+    def native_unit_of_measurement(self) -> str | None:
         """Return the unit of measurement."""
-        return self._sensor_info.get("unit")
+        unit = self._sensor_info.get("unit")
+        if unit:
+            currency_symbols = {"USD": "$", "EUR": "€", "GBP": "£", "BTC": "₿", "ETH": "Ξ"}
+            symbol = currency_symbols.get(self.coordinator.currency, self.coordinator.currency)
+            return unit.replace("{currency_symbol}", symbol)
+        return None
 
     @property
-    def extra_state_attributes(self):
+    def extra_state_attributes(self) -> dict[str, Any] | None:
         """Return the state attributes."""
         category = self._sensor_info["category"]
         

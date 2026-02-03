@@ -5,9 +5,11 @@ from datetime import timedelta
 
 import aiohttp
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.helpers.typing import ConfigType
 
 from .const import (
     DOMAIN, 
@@ -15,17 +17,22 @@ from .const import (
     CONF_SYMBOLS, 
     CONF_SCAN_INTERVAL, 
     CONF_DECIMALS, 
+    CONF_SHOW_SENSORS,
+    CONF_CURRENCY,
     API_URL, 
     GLOBAL_API_URL,
     FEAR_GREED_API_URL,
     KEY_INFO_API_URL,
     DEFAULT_SCAN_INTERVAL, 
-    DEFAULT_DECIMALS
+    DEFAULT_DECIMALS,
+    DEFAULT_CURRENCY,
+    DEFAULT_SENSORS,
+    SENSOR_TYPES
 )
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS = ["sensor"]
+PLATFORMS = ["sensor", "diagnostics"]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up CoinMarketCap from a config entry."""
@@ -36,6 +43,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     symbols = entry.options.get(CONF_SYMBOLS, entry.data[CONF_SYMBOLS])
     scan_interval = entry.options.get(CONF_SCAN_INTERVAL, entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
     decimals = entry.options.get(CONF_DECIMALS, entry.data.get(CONF_DECIMALS, DEFAULT_DECIMALS))
+    currency = entry.options.get(CONF_CURRENCY, entry.data.get(CONF_CURRENCY, DEFAULT_CURRENCY))
+    show_sensors = entry.options.get(CONF_SHOW_SENSORS, entry.data.get(CONF_SHOW_SENSORS, DEFAULT_SENSORS))
 
     coordinator = CoinMarketCapDataUpdateCoordinator(
         hass,
@@ -44,6 +53,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         symbols=symbols,
         scan_interval=scan_interval,
         decimals=decimals,
+        currency=currency,
+        show_sensors=show_sensors,
     )
 
     await coordinator.async_config_entry_first_refresh()
@@ -70,15 +81,27 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Reload config entry."""
     await hass.config_entries.async_reload(entry.entry_id)
 
-class CoinMarketCapDataUpdateCoordinator(DataUpdateCoordinator):
+class CoinMarketCapDataUpdateCoordinator(DataUpdateCoordinator[dict[str, any]]):
     """Class to manage fetching CoinMarketCap data."""
 
-    def __init__(self, hass, session, api_key, symbols, scan_interval, decimals):
+    def __init__(
+        self, 
+        hass: HomeAssistant, 
+        session: aiohttp.ClientSession, 
+        api_key: str, 
+        symbols: str, 
+        scan_interval: int, 
+        decimals: int, 
+        currency: str, 
+        show_sensors: list[str]
+    ) -> None:
         """Initialize the coordinator."""
         self.session = session
         self.api_key = api_key
         self.symbols = symbols.replace(" ", "")
         self.decimals = decimals
+        self.currency = currency
+        self.show_sensors = show_sensors
         
         super().__init__(
             hass,
@@ -87,6 +110,14 @@ class CoinMarketCapDataUpdateCoordinator(DataUpdateCoordinator):
             update_interval=timedelta(seconds=scan_interval),
         )
 
+    def _get_enabled_categories(self) -> set[str]:
+        """Identify which sensor categories are currently enabled."""
+        categories = set()
+        for sensor_type in self.show_sensors:
+            if sensor_type in SENSOR_TYPES:
+                categories.add(SENSOR_TYPES[sensor_type]["category"])
+        return categories
+
     async def _async_update_data(self):
         """Fetch data from API."""
         headers = {
@@ -94,32 +125,62 @@ class CoinMarketCapDataUpdateCoordinator(DataUpdateCoordinator):
             'Accepts': 'application/json',
         }
         
-        # 1. Fetch cryptocurrency quotes (existing)
+        # Determine which calls are needed
+        enabled_categories = self._get_enabled_categories()
+        
+        # 1. Fetch cryptocurrency quotes (symbol category)
         params_quotes = {
             'symbol': self.symbols,
-            'convert': 'USD'
+            'convert': self.currency
         }
         
-        async def fetch_url(url, params=None):
+        async def fetch_url(url: str, params: dict[str, any] | None = None) -> dict[str, any] | None:
             """Helper to fetch JSON with error handling."""
             try:
                 async with self.session.get(url, headers=headers, params=params, timeout=10) as response:
+                    if response.status in (401, 403):
+                        _LOGGER.error("Authentication failed (401/403) for %s. Triggering re-auth.", url)
+                        raise ConfigEntryAuthFailed("Invalid API Key or insufficient permissions")
+                    
+                    if response.status == 429:
+                        _LOGGER.warning("API Rate limit reached for %s", url)
+                        return None
+                        
                     if response.status != 200:
                         _LOGGER.error("Error fetching %s: %s", url, response.status)
                         return None
                     return await response.json()
+            except ConfigEntryAuthFailed:
+                raise
             except Exception as err:
                 _LOGGER.error("Exception fetching %s: %s", url, err)
                 return None
 
-        # Execute all fetches in parallel
-        results = await asyncio.gather(
-            fetch_url(API_URL, params_quotes),
-            fetch_url(GLOBAL_API_URL),
-            fetch_url(FEAR_GREED_API_URL),
-            fetch_url(KEY_INFO_API_URL),
-            return_exceptions=True
-        )
+        tasks = []
+        
+        # Always fetch quotes if symbol-based sensors are enabled (or if no sensors enabled yet)
+        if "symbol" in enabled_categories or not enabled_categories:
+            tasks.append(fetch_url(API_URL, params_quotes))
+        else:
+            tasks.append(asyncio.sleep(0, result=None)) # Placeholder
+            
+        if "global" in enabled_categories:
+            tasks.append(fetch_url(GLOBAL_API_URL, params={'convert': self.currency}))
+        else:
+            tasks.append(asyncio.sleep(0, result=None))
+            
+        if "fear_greed" in enabled_categories:
+            tasks.append(fetch_url(FEAR_GREED_API_URL))
+        else:
+            tasks.append(asyncio.sleep(0, result=None))
+            
+        if "key_info" in enabled_categories:
+            tasks.append(fetch_url(KEY_INFO_API_URL))
+        else:
+            tasks.append(asyncio.sleep(0, result=None))
+
+        # Execute all needed fetches in parallel
+        results = await asyncio.gather(*tasks, return_exceptions=True)
 
         final_data = {}
         

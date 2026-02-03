@@ -8,15 +8,24 @@
                     "api_key": "API-Schlüssel",
                     "symbols": "Kryptowährungen (Symbole)",
                     "scan_interval": "Aktualisierungsintervall",
-                    "decimals": "Anzeigepräzision",
-                    "show_sensors": "Aktivierte Sensoren"
+                    "decimals": "Dezimalstellen (Preis & %)",
+                    "currency": "Währung (USD, EUR, ...)",
+                    "show_sensors": "Sensoren auswählen"
                 },
                 "data_description": {
-                    "api_key": "Dein persönlicher Pro API-Key aus dem CoinMarketCap Entwicklerportal.",
-                    "symbols": "Gib die Symbole ein, die du verfolgen möchtest, getrennt durch Kommas (z.B. BTC,ETH,SOL).",
-                    "scan_interval": "Wie oft die Daten aktualisiert werden sollen in Sekunden (Minimum 60s, empfohlen 300s).",
-                    "decimals": "Anzahl der Dezimalstellen für Preise und Prozentänderungen.",
-                    "show_sensors": "Wähle aus, welche Datenpunkte du sehen möchtest. Globale Kennzahlen und API-Nutzung gelten für alle Symbole."
+                    "api_key": "Dein Pro API-Key (zu finden unter pro.coinmarketcap.com)",
+                    "symbols": "Gib Symbole wie 'BTC,ETH,SOL' oder 'DOGE,SHIB,PEPE' ein",
+                    "scan_interval": "Intervall in Sekunden zwischen Updates (z.B. 300 = 5 Minuten)",
+                    "decimals": "Anzahl der Dezimalstellen (z.B. 2)",
+                    "currency": "Bevorzugte Währung für die Bewertung (z.B. USD oder EUR)",
+                    "show_sensors": "Wähle aus, welche Datenpunkte du für jedes Symbol sehen möchtest"
+                }
+            },
+            "reauth_confirm": {
+                "title": "Erneut authentifizieren",
+                "description": "Dein API-Schlüssel ist nicht mehr gültig. Bitte gib einen neuen ein.",
+                "data": {
+                    "api_key": "API-Schlüssel"
                 }
             }
         },
@@ -29,15 +38,17 @@
                         "api_key": "API-Schlüssel",
                         "symbols": "Kryptowährungen (Symbole)",
                         "scan_interval": "Aktualisierungsintervall",
-                        "decimals": "Anzeigepräzision",
-                        "show_sensors": "Aktivierte Sensoren"
+                        "decimals": "Dezimalstellen (Preis & %)",
+                        "currency": "Währung (USD, EUR, ...)",
+                        "show_sensors": "Sensoren auswählen"
                     },
                     "data_description": {
-                        "api_key": "Dein Pro API-Key (zu finden unter pro.coinmarketcap.com).",
-                        "symbols": "Ändere die verfolgten Symbole. Verwende Kommas zur Trennung.",
-                        "scan_interval": "Häufigkeit der Aktualisierungen in Sekunden (Minimum 60s).",
-                        "decimals": "Passe die Anzahl der Dezimalstellen für deine Sensoren an.",
-                        "show_sensors": "Sensoren für Preise, globale Marktdaten oder API-Nutzung hinzufügen oder entfernen."
+                        "api_key": "Aktualisiere deinen Pro API-Key falls nötig",
+                        "symbols": "Füge neue Symbole hinzu oder entferne vorhandene",
+                        "scan_interval": "Intervall in Sekunden (z.B. 60, 300, 3600)",
+                        "decimals": "Anzahl der Dezimalstellen für die Anzeige",
+                        "currency": "Bevorzugte Währung für die Bewertung",
+                        "show_sensors": "Datenpunkte hinzufügen oder entfernen"
                     }
                 }
             }
@@ -48,7 +59,8 @@
             "unknown": "Unerwarteter Fehler"
         },
         "abort": {
-            "already_configured": "Dieses Gerät ist bereits konfiguriert"
+            "already_configured": "Dieses Gerät ist bereits konfiguriert",
+            "reauth_successful": "Die erneute Authentifizierung war erfolgreich"
         }
     }
 }

@@ -29,15 +29,24 @@
                         "api_key": "API Key",
                         "symbols": "Cryptocurrencies (Symbols)",
                         "scan_interval": "Refresh Interval",
-                        "decimals": "Display Precision",
-                        "show_sensors": "Enabled Sensors"
+                        "decimals": "Decimals (Price & %)",
+                        "currency": "Currency (USD, EUR, ...)",
+                        "show_sensors": "Select Sensors to Track"
                     },
                     "data_description": {
-                        "api_key": "Your Pro API Key (find it at pro.coinmarketcap.com).",
-                        "symbols": "Change the symbols you are tracking. Use commas to separate them.",
-                        "scan_interval": "Frequency of updates in seconds (Minimum 60s).",
-                        "decimals": "Adjust the number of decimal places for your sensors.",
-                        "show_sensors": "Add or remove sensors for prices, global metrics, or API usage."
+                        "api_key": "Your Pro API Key (find it at pro.coinmarketcap.com)",
+                        "symbols": "Try combinations like 'BTC,ETH,SOL' or 'DOGE,SHIB,PEPE'",
+                        "scan_interval": "Interval in seconds between API updates (e.g., 300 = 5 minutes)",
+                        "decimals": "Number of decimal places to display (e.g., 2)",
+                        "currency": "Preferred currency for valuation (e.g., USD or EUR)",
+                        "show_sensors": "Choose which data points you want to see for each symbol"
+                    }
+                },
+                "reauth_confirm": {
+                    "title": "Re-authenticate",
+                    "description": "Your API Key is no longer valid. Please enter a new one.",
+                    "data": {
+                        "api_key": "API Key"
                     }
                 }
             }
@@ -48,7 +57,8 @@
             "unknown": "Unexpected error"
         },
         "abort": {
-            "already_configured": "Device is already configured"
+            "already_configured": "Device is already configured",
+            "reauth_successful": "Re-authentication was successful"
         }
     }
 }

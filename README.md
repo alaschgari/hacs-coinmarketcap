@@ -5,6 +5,7 @@
 </p>
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+[![License](https://img.shields.io/github/license/alaschgari/hacs-coinmarketcap)](https://github.com/alaschgari/hacs-coinmarketcap/blob/main/LICENSE)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate-orange.svg)](https://www.buymeacoffee.com/alaschgari)
 
 This custom integration for Home Assistant allows you to track cryptocurrency prices and market data using the CoinMarketCap API.
@@ -41,6 +42,61 @@ This integration utilizes the following CoinMarketCap Professional API endpoints
 2. Click **Add Integration**.
 3. Search for **CoinMarketCap**.
 4. Enter your **API Key** (from [pro.coinmarketcap.com](https://pro.coinmarketcap.com/account/)) and the **Symbols** (comma-separated, e.g., `BTC,ETH,SOL`) you want to track.
+
+## 📈 Sensor List
+Every symbol you add will create a set of sensors (depending on your selection):
+- **Price**: Current price in your chosen currency (USD, EUR, etc.)
+- **24h/7d/30d Change**: Percentage change over different timeframes.
+- **Market Cap**: Valuation of the coin.
+- **Circulating Supply**: How many coins are currently in the market.
+- **CMC Rank**: Official CoinMarketCap ranking.
+
+**Global Metrics:**
+- **BTC/ETH Dominance**: Percentage of the total market held by these coins.
+- **Fear & Greed Index**: Market sentiment index (with dynamic icons!).
+
+## 🛠️ Diagnostics
+If you encounter issues, you can download a diagnostic report:
+1. Go to **Settings** > **Devices & Services**.
+2. Find **CoinMarketCap**.
+3. Click the three dots and select **Download diagnostics**.
+*Note: Sensitive data like your API key is automatically redacted.*
+
+## 🤖 Example Automation
+Send a notification to your phone when Bitcoin falls by more than 5% in 24 hours:
+
+```yaml
+alias: "Crypto Alert: BTC Drop"
+trigger:
+  - platform: numeric_state
+    entity_id: sensor.btc_24h_change
+    below: -5
+action:
+  - service: notify.mobile_app_your_phone
+    data:
+      title: "Bitcoin Alert! 📉"
+      message: "Bitcoin is down more than 5% in the last 24h!"
+```
+
+## ❓ Troubleshooting
+**Error: Invalid API Key**
+- Double check that you copied the key from [pro.coinmarketcap.com](https://pro.coinmarketcap.com/account/).
+- Ensure there are no leading/trailing spaces.
+
+**Update Interval**
+- The free plan of CoinMarketCap has credit limits. An interval of 300 seconds (5 minutes) is recommended to stay within limits.
+
+**Symbols not found**
+- Use only the symbol (e.g., `BTC`), not the full name.
+
+## Contributing
+
+Contributions are welcome! If you have suggestions for improvements or want to contribute code, please:
+1. Fork the repository.
+2. Create a new branch.
+3. Submit a pull request.
+
+Please make sure to open an issue first to discuss major changes.
 
 ## Support
 
