@@ -1,11 +1,11 @@
 # CoinMarketCap Integration for Home Assistant
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/alaschgari/hacs-coinmarketcap/main/logo.png" alt="CoinMarketCap Logo" width="200" height="200">
+  <img src="https://raw.githubusercontent.com/alaschgari/ha-coinmarketcap/main/logo.png" alt="CoinMarketCap Logo" width="200" height="200">
 </p>
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
-[![License](https://img.shields.io/github/license/alaschgari/hacs-coinmarketcap)](https://github.com/alaschgari/hacs-coinmarketcap/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/alaschgari/ha-coinmarketcap)](https://github.com/alaschgari/ha-coinmarketcap/blob/main/LICENSE)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate-orange.svg)](https://www.buymeacoffee.com/alaschgari)
 
 This custom integration for Home Assistant allows you to track cryptocurrency prices and market data using the CoinMarketCap API.
@@ -33,7 +33,7 @@ This integration utilizes the following CoinMarketCap Professional API endpoints
 1. Open HACS in your Home Assistant instance.
 2. Click on "Integrations".
 3. Click the three dots in the upper right corner and select "Custom repositories".
-4. Add the URL of this repository (`https://github.com/alaschgari/hacs-coinmarketcap`) and select "Integration" as the category.
+4. Add the URL of this repository (`https://github.com/alaschgari/ha-coinmarketcap`) and select "Integration" as the category.
 5. Click "Add" and then install the "CoinMarketCap" integration.
 6. Restart Home Assistant.
 
