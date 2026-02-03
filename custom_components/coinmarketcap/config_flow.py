@@ -9,7 +9,10 @@ from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 import homeassistant.helpers.config_validation as cv
-
+from .const import (
+    DOMAIN, 
+    CONF_API_KEY, 
+    CONF_SYMBOLS, 
     CONF_SCAN_INTERVAL, 
     CONF_DECIMALS, 
     CONF_SHOW_SENSORS,

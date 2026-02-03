@@ -2,6 +2,7 @@
 import asyncio
 import logging
 from datetime import timedelta
+from typing import Any
 
 import aiohttp
 from homeassistant.config_entries import ConfigEntry
@@ -81,7 +82,7 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Reload config entry."""
     await hass.config_entries.async_reload(entry.entry_id)
 
-class CoinMarketCapDataUpdateCoordinator(DataUpdateCoordinator[dict[str, any]]):
+class CoinMarketCapDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     """Class to manage fetching CoinMarketCap data."""
 
     def __init__(
@@ -134,7 +135,7 @@ class CoinMarketCapDataUpdateCoordinator(DataUpdateCoordinator[dict[str, any]]):
             'convert': self.currency
         }
         
-        async def fetch_url(url: str, params: dict[str, any] | None = None) -> dict[str, any] | None:
+        async def fetch_url(url: str, params: dict[str, Any] | None = None) -> dict[str, Any] | None:
             """Helper to fetch JSON with error handling."""
             try:
                 async with self.session.get(url, headers=headers, params=params, timeout=10) as response:
